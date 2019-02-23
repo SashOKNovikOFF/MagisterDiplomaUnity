@@ -19,7 +19,9 @@ public class DijkstraTests
         DijkstraAlgorithm.Dijkstra AlgorithmClass = new DijkstraAlgorithm.Dijkstra(graph);
         AlgorithmClass.CallDijkstraAlgorithm(0, 0);
         Assert.AreEqual(AlgorithmClass.GetMinimumDistance(0), 0.0);
-        Assert.AreEqual(AlgorithmClass.GetVerticesPath().Count, 0);
+
+        List<int> VerticesPath = new List<int> { 0 };
+        Assert.AreEqual(AlgorithmClass.GetVerticesPath(), VerticesPath);
     }
 
     /// <summary>
@@ -94,7 +96,7 @@ public class DijkstraTests
         Assert.AreEqual(AlgorithmClass.GetMinimumDistance(4), 20.0);
         Assert.AreEqual(AlgorithmClass.GetMinimumDistance(5), 11.0);
 
-        List<int> VerticesPath = new List<int> { 0, 1, 2, 5 };
+        List<int> VerticesPath = new List<int> { 0, 2, 5 };
         Assert.AreEqual(AlgorithmClass.GetVerticesPath(), VerticesPath);
     }
 }

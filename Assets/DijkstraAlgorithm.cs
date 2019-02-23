@@ -133,36 +133,41 @@ namespace DijkstraAlgorithm
 
             double[] distance = new double[verticesCount];
             bool[] shortestPathTreeSet = new bool[verticesCount];
+            int[] previousVertice = new int[verticesCount];
 
             for (int i = 0; i < verticesCount; ++i)
             {
                 distance[i] = double.MaxValue;
                 shortestPathTreeSet[i] = false;
+                previousVertice[i] = -1;
             }
 
             distance[source] = 0;
-
-            bool pathFlag = true;
+            
             for (int count = 0; count < verticesCount - 1; ++count)
             {
                 int u = MinimumDistance(distance, shortestPathTreeSet);
-
-                if ((u != endVertice) && pathFlag)
-                    VerticesPath.Add(u);
-                else if (pathFlag)
-                {
-                    VerticesPath.Add(endVertice);
-                    pathFlag = false;
-                }
 
                 shortestPathTreeSet[u] = true;
 
                 for (int v = 0; v < verticesCount; ++v)
                     if (!shortestPathTreeSet[v] && Convert.ToBoolean(graph[u, v]) && distance[u] != double.MaxValue && distance[u] + graph[u, v] < distance[v])
+                    {
                         distance[v] = distance[u] + graph[u, v];
+                        previousVertice[v] = u;
+                    }
             }
 
             minimum_distance = distance;
+
+            int last = endVertice;
+            VerticesPath.Add(last);
+            while (previousVertice[last] != -1)
+            {
+                int next = previousVertice[last];
+                VerticesPath.Insert(0, next);
+                last = next;
+            }
         }
 
     }
