@@ -30,6 +30,35 @@ namespace DijkstraAlgorithm
         private int[] minimum_distance;
 
         /// <summary>
+        /// Определить вершину, для которой не рассчитывалось минимальное расстояние до других вершин.
+        /// </summary>
+        /// <param name="distance">
+        /// Массив минимальных расстояний от заданной вершины до любой другой вершины.
+        /// </param>
+        /// <param name="shortestPathTreeSet">
+        /// Массив вершин, по которым уже определялись минимальные расстояния до других вершин.
+        /// </param>
+        /// <returns>
+        /// Индекс искомой вершины.
+        /// </returns>
+        private int MinimumDistance(int[] distance, bool[] shortestPathTreeSet)
+        {
+            int min = int.MaxValue;
+            int minIndex = 0;
+
+            for (int v = 0; v < verticesCount; ++v)
+            {
+                if (shortestPathTreeSet[v] == false && distance[v] <= min)
+                {
+                    min = distance[v];
+                    minIndex = v;
+                }
+            }
+
+            return minIndex;
+        }
+
+        /// <summary>
         /// Конструктор класса.
         /// </summary>
         /// <param name="initGraph">
@@ -66,36 +95,10 @@ namespace DijkstraAlgorithm
         /// </returns>
         public int GetMinimumDistance(int vertice)
         {
+            if (vertice < 0 || vertice >= verticesCount)
+                throw new System.ArgumentOutOfRangeException("Выбрана вершина вне диапазона имеющихся вершин.");
+
             return minimum_distance[vertice];
-        }
-
-        /// <summary>
-        /// Определить вершину, для которой не рассчитывалось минимальное расстояние до других вершин.
-        /// </summary>
-        /// <param name="distance">
-        /// Массив минимальных расстояний от заданной вершины до любой другой вершины.
-        /// </param>
-        /// <param name="shortestPathTreeSet">
-        /// Массив вершин, по которым уже определялись минимальные расстояния до других вершин.
-        /// </param>
-        /// <returns>
-        /// Индекс искомой вершины.
-        /// </returns>
-        private int MinimumDistance(int[] distance, bool[] shortestPathTreeSet)
-        {
-            int min = int.MaxValue;
-            int minIndex = 0;
-
-            for (int v = 0; v < verticesCount; ++v)
-            {
-                if (shortestPathTreeSet[v] == false && distance[v] <= min)
-                {
-                    min = distance[v];
-                    minIndex = v;
-                }
-            }
-
-            return minIndex;
         }
 
         /// <summary>
@@ -106,6 +109,9 @@ namespace DijkstraAlgorithm
         /// </param>
         public void CallDijkstraAlgorithm(int source)
         {
+            if (source < 0 || source >= verticesCount)
+                throw new System.ArgumentOutOfRangeException("Выбрана вершина вне диапазона имеющихся вершин.");
+
             int[] distance = new int[verticesCount];
             bool[] shortestPathTreeSet = new bool[verticesCount];
 

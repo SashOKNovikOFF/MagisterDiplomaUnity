@@ -8,6 +8,9 @@ using DijkstraAlgorithm;
 
 public class DijkstraTests
 {
+    /// <summary>
+    /// Проверить, что расстояние от 1-ой вершины до неё самой определяется корректно.
+    /// </summary>
     [Test]
     public void CheckOneVertice()
     {
@@ -17,6 +20,9 @@ public class DijkstraTests
         Assert.AreEqual(AlgorithmClass.GetMinimumDistance(0), 0);
     }
 
+    /// <summary>
+    /// Проверить, что корректно обрабатываются отрицательные весы графа.
+    /// </summary>
     [Test]
     public void CheckNegativeDistance()
     {
@@ -24,6 +30,9 @@ public class DijkstraTests
         Assert.Throws<System.ArgumentException>(() => new DijkstraAlgorithm.Dijkstra(graph));
     }
 
+    /// <summary>
+    /// Проверить, что корректно обрабатываются ненулевые диагональные элементы графа.
+    /// </summary>
     [Test]
     public void CheckDiagonalElements()
     {
@@ -31,6 +40,9 @@ public class DijkstraTests
         Assert.Throws<System.ArgumentException>(() => new DijkstraAlgorithm.Dijkstra(graph));
     }
 
+    /// <summary>
+    /// Проверить, что корректно обрабатываются неквадратные матрицы-графы.
+    /// </summary>
     [Test]
     public void CheckSquareGraph()
     {
@@ -38,6 +50,26 @@ public class DijkstraTests
         Assert.Throws<System.ArgumentException>(() => new DijkstraAlgorithm.Dijkstra(graph));
     }
 
+    /// <summary>
+    /// Проверить, что корректно обрабатываются неправильно выбранные вершины.
+    /// </summary>
+    [Test]
+    public void CheckOutOfRangeVertices()
+    {
+        int[,] graph = { { 0, 1 },
+                         { 1, 0 } };
+        DijkstraAlgorithm.Dijkstra AlgorithmClass = new DijkstraAlgorithm.Dijkstra(graph);
+
+        Assert.Throws<System.ArgumentOutOfRangeException>(() => AlgorithmClass.GetMinimumDistance(-1));
+        Assert.Throws<System.ArgumentOutOfRangeException>(() => AlgorithmClass.GetMinimumDistance(2));
+
+        Assert.Throws<System.ArgumentOutOfRangeException>(() => AlgorithmClass.CallDijkstraAlgorithm(-1));
+        Assert.Throws<System.ArgumentOutOfRangeException>(() => AlgorithmClass.CallDijkstraAlgorithm(2));
+    }
+
+    /// <summary>
+    /// Проверить работу алгоритма Дейкстры на примере из Википедии.
+    /// </summary>
     [Test]
     public void TestWikipediaExample()
     {
