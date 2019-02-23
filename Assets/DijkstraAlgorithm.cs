@@ -7,12 +7,34 @@ using UnityEngine;
 
 namespace DijkstraAlgorithm
 {
+    /// <summary>
+    ///  Класс, реализующий алгоритм Дейкстры.
+    /// </summary>
     public class Dijkstra
     {
+        /// <summary>
+        /// Граф в виде матрицы M размера N x N, где N - число вершин графа.
+        /// Элемент матрицы M(i, j) - вес ребра графа, соединяющего вершины i и j.
+        /// M(i, j) характеризует расстояние от вершины i до j. Вес ребра M(i, i) равен нулю.
+        /// Расстояние считается всегда положительным.
+        /// </summary>
         private int[,] graph;
+        /// <summary>
+        /// Количество вершин графа.
+        /// </summary>
         private int verticesCount;
+        /// <summary>
+        /// Массив минимальных расстояний от заданной вершины до любой другой вершины.
+        /// Представляется в виде [L(0), L(1), ..., L(N)], где L(i) - расстояние от заданной вершины до вершины i.
+        /// </summary>
         private int[] minimum_distance;
 
+        /// <summary>
+        /// Конструктор класса.
+        /// </summary>
+        /// <param name="initGraph">
+        /// Исходный граф с весами.
+        /// </param>
         public Dijkstra(int[,] initGraph)
         {
             verticesCount = initGraph.GetLength(0);
@@ -32,11 +54,34 @@ namespace DijkstraAlgorithm
             graph = initGraph;
             minimum_distance = new int[verticesCount];
         }
+
+        /// <summary>
+        /// Получить минимальное расстояние от заданной вершины до любой другой вершины.
+        /// </summary>
+        /// <param name="vertice">
+        /// Вершина, до которой необходимо рассчитать минимальное расстояние.
+        /// </param>
+        /// <returns>
+        /// Минимальное расстояние L(vertice) от заданной вершины.
+        /// </returns>
         public int GetMinimumDistance(int vertice)
         {
             return minimum_distance[vertice];
         }
-        private int MinimumDistance(int[] distance, bool[] shortestPathTreeSet, int verticesCount)
+
+        /// <summary>
+        /// Определить вершину, для которой не рассчитывалось минимальное расстояние до других вершин.
+        /// </summary>
+        /// <param name="distance">
+        /// Массив минимальных расстояний от заданной вершины до любой другой вершины.
+        /// </param>
+        /// <param name="shortestPathTreeSet">
+        /// Массив вершин, по которым уже определялись минимальные расстояния до других вершин.
+        /// </param>
+        /// <returns>
+        /// Индекс искомой вершины.
+        /// </returns>
+        private int MinimumDistance(int[] distance, bool[] shortestPathTreeSet)
         {
             int min = int.MaxValue;
             int minIndex = 0;
@@ -52,6 +97,13 @@ namespace DijkstraAlgorithm
 
             return minIndex;
         }
+
+        /// <summary>
+        /// Рассчитать минимальные расстояния до всех вершин при помощи алгоритма Дейкстры.
+        /// </summary>
+        /// <param name="source">
+        /// Вершина графа, с которой рассчитывается минимальное расстояние до любой другой.
+        /// </param>
         public void CallDijkstraAlgorithm(int source)
         {
             int[] distance = new int[verticesCount];
@@ -67,7 +119,7 @@ namespace DijkstraAlgorithm
 
             for (int count = 0; count < verticesCount - 1; ++count)
             {
-                int u = MinimumDistance(distance, shortestPathTreeSet, verticesCount);
+                int u = MinimumDistance(distance, shortestPathTreeSet);
                 shortestPathTreeSet[u] = true;
 
                 for (int v = 0; v < verticesCount; ++v)
