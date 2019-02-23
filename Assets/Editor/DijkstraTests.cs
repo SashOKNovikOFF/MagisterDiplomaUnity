@@ -15,10 +15,10 @@ public class DijkstraTests
     [Test]
     public void CheckOneVertice()
     {
-        int[,] graph = { { 0 } };
+        double[,] graph = { { 0.0 } };
         DijkstraAlgorithm.Dijkstra AlgorithmClass = new DijkstraAlgorithm.Dijkstra(graph);
         AlgorithmClass.CallDijkstraAlgorithm(0, 0);
-        Assert.AreEqual(AlgorithmClass.GetMinimumDistance(0), 0);
+        Assert.AreEqual(AlgorithmClass.GetMinimumDistance(0), 0.0);
         Assert.AreEqual(AlgorithmClass.GetVerticesPath().Count, 0);
     }
 
@@ -28,7 +28,8 @@ public class DijkstraTests
     [Test]
     public void CheckNegativeDistance()
     {
-        int[,] graph = { { 0, -1 }, { -1, 0 } };
+        double[,] graph = { {  0.0, -1.0 },
+                            { -1.0,  0.0 } };
         Assert.Throws<System.ArgumentException>(() => new DijkstraAlgorithm.Dijkstra(graph));
     }
 
@@ -38,7 +39,8 @@ public class DijkstraTests
     [Test]
     public void CheckDiagonalElements()
     {
-        int[,] graph = { { 0, -1 }, { -1, -1 } };
+        double[,] graph = { {  0.0, -1.0 },
+                            { -1.0, -1.0 } };
         Assert.Throws<System.ArgumentException>(() => new DijkstraAlgorithm.Dijkstra(graph));
     }
 
@@ -48,7 +50,7 @@ public class DijkstraTests
     [Test]
     public void CheckSquareGraph()
     {
-        int[,] graph = { { 0, -1 } };
+        double[,] graph = { { 0.0, -1.0 } };
         Assert.Throws<System.ArgumentException>(() => new DijkstraAlgorithm.Dijkstra(graph));
     }
 
@@ -58,8 +60,8 @@ public class DijkstraTests
     [Test]
     public void CheckOutOfRangeVertices()
     {
-        int[,] graph = { { 0, 1 },
-                         { 1, 0 } };
+        double[,] graph = { { 0.0, 1.0 },
+                            { 1.0, 0.0 } };
         DijkstraAlgorithm.Dijkstra AlgorithmClass = new DijkstraAlgorithm.Dijkstra(graph);
 
         Assert.Throws<System.ArgumentOutOfRangeException>(() => AlgorithmClass.GetMinimumDistance(-1));
@@ -77,20 +79,20 @@ public class DijkstraTests
     [Test]
     public void TestWikipediaExample()
     {
-        int[,] graph = { { 0,  7,  9,  0,  0, 14 },
-                         { 7,  0,  10, 15, 0, 0 },
-                         { 9,  10, 0,  11, 0, 2 },
-                         { 0,  15, 11, 0,  6, 0 },
-                         { 0,  0,  0,  6,  0, 9 },
-                         { 14, 0,  2,  0,  9, 0 } };
+        double[,] graph = { { 0.0,  7.0,  9.0,  0.0,  0.0, 14.0 },
+                            { 7.0,  0.0,  10.0, 15.0, 0.0, 0.0 },
+                            { 9.0,  10.0, 0.0,  11.0, 0.0, 2.0 },
+                            { 0.0,  15.0, 11.0, 0.0,  6.0, 0.0 },
+                            { 0.0,  0.0,  0.0,  6.0,  0.0, 9.0 },
+                            { 14.0, 0.0,  2.0,  0.0,  9.0, 0.0 } };
         DijkstraAlgorithm.Dijkstra AlgorithmClass = new DijkstraAlgorithm.Dijkstra(graph);
         AlgorithmClass.CallDijkstraAlgorithm(0, 5);
-        Assert.AreEqual(AlgorithmClass.GetMinimumDistance(0), 0);
-        Assert.AreEqual(AlgorithmClass.GetMinimumDistance(1), 7);
-        Assert.AreEqual(AlgorithmClass.GetMinimumDistance(2), 9);
-        Assert.AreEqual(AlgorithmClass.GetMinimumDistance(3), 20);
-        Assert.AreEqual(AlgorithmClass.GetMinimumDistance(4), 20);
-        Assert.AreEqual(AlgorithmClass.GetMinimumDistance(5), 11);
+        Assert.AreEqual(AlgorithmClass.GetMinimumDistance(0), 0.0);
+        Assert.AreEqual(AlgorithmClass.GetMinimumDistance(1), 7.0);
+        Assert.AreEqual(AlgorithmClass.GetMinimumDistance(2), 9.0);
+        Assert.AreEqual(AlgorithmClass.GetMinimumDistance(3), 20.0);
+        Assert.AreEqual(AlgorithmClass.GetMinimumDistance(4), 20.0);
+        Assert.AreEqual(AlgorithmClass.GetMinimumDistance(5), 11.0);
 
         List<int> VerticesPath = new List<int> { 0, 1, 2, 5 };
         Assert.AreEqual(AlgorithmClass.GetVerticesPath(), VerticesPath);

@@ -40,57 +40,110 @@ namespace TGS
             tgs = TerrainGridSystem.instance;
             List<Cell> myCells = tgs.cells;
             int Nx = tgs.rowCount;
-            int Ny = tgs.columnCount;
+            int Nz = tgs.columnCount;
 
             // Задать исходную высоту
             Cell zeroCell = myCells[0];
             Vector3 zeroCoord = tgs.CellGetPosition(0);
 
-            // Заполнить весы графа
-            int[,] dijk_grid = new int[Nx * Ny, Nx * Ny];
-            for (int i = 0; i < Nx; i++)
-                for (int j = 0; j < Ny; j++)
-                    if (i != j)
+            using (var file = new StreamWriter(@"D:\Vec_grid.txt", true))
+            {
+                for (int row = 0; row < Nx; row++)
+                {
+                    for (int column = 0; column < Nz; column++)
                     {
-                        Vector3 centerCoord = tgs.CellGetPosition(myCells[j + Ny * i]);
+                        Vector3 centerCoord = tgs.CellGetPosition(myCells[column + Nz * row]);
+                        String str = centerCoord.x.ToString() + "\t" + centerCoord.z.ToString() + "\t" + centerCoord.y.ToString();
+                        file.WriteLine(str);
+                    }
+                    file.WriteLine("\n");
+                }
+            }
 
-                        if (i != 0)
-                        {
-                            Vector3 leftCoord = tgs.CellGetPosition(myCells[j + Ny * (i - 1)]);
-                            dijk_grid[j + Ny * i, j + Ny * (i - 1)] = (int)Vector3.Distance(centerCoord, leftCoord);
-                        }
+            // Заполнить весы графа
+            double[,] dijk_grid = new double[Nx * Nz, Nx * Nz];
+            for (int row = 0; row < Nx; row++)
+                for (int column = 0; column < Nz; column++)
+                {
+                    int currentIndex = column + Nz * row;
+                    Vector3 centerCoord = tgs.CellGetPosition(myCells[currentIndex]);
 
-                        if (i != (Nx - 1))
-                        {
-                            Vector3 rightCoord = tgs.CellGetPosition(myCells[j + Ny * (i + 1)]);
-                            dijk_grid[j + Ny * i, j + Ny * (i + 1)] = (int)Vector3.Distance(centerCoord, rightCoord);
-                        }
-
-                        if (j != (Ny - 1))
-                        {
-                            Vector3 upCoord = tgs.CellGetPosition(myCells[(j + 1) + Ny * i]);
-                            dijk_grid[j + Ny * i, (j + 1) + Ny * i] = (int)Vector3.Distance(centerCoord, upCoord);
-                        }
-
-                        if (j != 0)
-                        {
-                            Vector3 downCoord = tgs.CellGetPosition(myCells[(j - 1) + Ny * i]);
-                            dijk_grid[j + Ny * i, (j - 1) + Ny * i] = (int)Vector3.Distance(centerCoord, downCoord);
-                        }
+                    if (row != 0)
+                    {
+                        int leftIndex = column + Nz * (row - 1);
+                        Vector3 leftCoord = tgs.CellGetPosition(myCells[leftIndex]);
+                        dijk_grid[currentIndex, leftIndex] = Vector3.Distance(centerCoord, leftCoord);
                     }
 
-            //using (var file = new StreamWriter(@"D:\Dijk_grid.txt", true))
-            //{
-            //    for (int i = 0; i < Nx * Ny; i++)
-            //    {
-            //        string str = "";
-            //        for (int j = 0; j < Nx * Ny; j++)
-            //            str += dijk_grid[i, j].ToString() + "\t";
-            //        file.WriteLine(str);
-            //    }
-            //}
+                    if (row != (Nx - 1))
+                    {
+                        int rightIndex = column + Nz * (row + 1);
+                        Vector3 rightCoord = tgs.CellGetPosition(myCells[rightIndex]);
+                        dijk_grid[currentIndex, rightIndex] = Vector3.Distance(centerCoord, rightCoord);
+                    }
 
+                    if (column != (Nz - 1))
+                    {
+                        int upIndex = (column + 1) + Nz * row;
+                        Vector3 upCoord = tgs.CellGetPosition(myCells[upIndex]);
+                        dijk_grid[currentIndex, upIndex] = Vector3.Distance(centerCoord, upCoord);
+                    }
 
+                    if (column != 0)
+                    {
+                        int downIndex = (column - 1) + Nz * row;
+                        Vector3 downCoord = tgs.CellGetPosition(myCells[downIndex]);
+                        dijk_grid[currentIndex, downIndex] = Vector3.Distance(centerCoord, downCoord);
+                    }
+                        
+                    // ----------------
+
+                    if ((row != 0) && (column != 0))
+                    {
+                        int leftDownIndex = (column - 1) + Nz * (row - 1);
+                        Vector3 leftDownCoord = tgs.CellGetPosition(myCells[leftDownIndex]);
+                        dijk_grid[currentIndex, leftDownIndex] = Vector3.Distance(centerCoord, leftDownCoord);
+                    }
+
+                    if ((row != (Nx - 1)) && (column != 0))
+                    {
+                        int rightDownIndex = (column - 1) + Nz * (row + 1);
+                        Vector3 rightDownCoord = tgs.CellGetPosition(myCells[rightDownIndex]);
+                        dijk_grid[currentIndex, rightDownIndex] = Vector3.Distance(centerCoord, rightDownCoord);
+                    }
+
+                    if ((row != 0) && (column != (Nz - 1)))
+                    {
+                        int leftUpIndex = (column + 1) + Nz * (row - 1);
+                        Vector3 leftUpCoord = tgs.CellGetPosition(myCells[leftUpIndex]);
+                        dijk_grid[currentIndex, leftUpIndex] = Vector3.Distance(centerCoord, leftUpCoord);
+                    }
+
+                    if ((row != (Nx - 1)) && (column != (Nz - 1)))
+                    {
+                        int rightUpIndex = (column + 1) + Nz * (row + 1);
+                        Vector3 rightUpCoord = tgs.CellGetPosition(myCells[rightUpIndex]);
+                        dijk_grid[currentIndex, rightUpIndex] = Vector3.Distance(centerCoord, rightUpCoord);
+                    }
+                }
+
+            DijkstraAlgorithm.Dijkstra AlgorithmClass = new DijkstraAlgorithm.Dijkstra(dijk_grid);
+            AlgorithmClass.CallDijkstraAlgorithm(0, Nx * Nz - 1);
+            double distance = AlgorithmClass.GetMinimumDistance(Nx * Nz - 1);
+            List<int> a = AlgorithmClass.GetVerticesPath();
+
+            using (var file = new StreamWriter(@"D:\Dijk_grid.txt", true))
+            {
+                for (int row = 0; row < Nx * Nz; row++)
+                {
+                    for (int column = 0; column < Nx * Nz; column++)
+                    {
+                        String str = dijk_grid[row, column] + "\t";
+                        file.Write(str);
+                    }
+                    file.WriteLine("\n");
+                }
+            }
         }
 
         private void WriteTGSCoordsToFile()
