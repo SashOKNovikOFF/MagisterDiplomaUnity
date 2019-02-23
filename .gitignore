@@ -5,6 +5,9 @@
 [Bb]uilds/
 Assets/AssetStoreTools*
 
+Assets/Infinity Code
+Assets/TerrainGridSystem
+
 # Visual Studio cache directory
 .vs/
 
