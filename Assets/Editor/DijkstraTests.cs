@@ -2,6 +2,7 @@
 using UnityEngine.TestTools;
 using NUnit.Framework;
 using System.Collections;
+using System.Collections.Generic;
 
 // Пользовательские библиотеки
 using DijkstraAlgorithm;
@@ -16,8 +17,9 @@ public class DijkstraTests
     {
         int[,] graph = { { 0 } };
         DijkstraAlgorithm.Dijkstra AlgorithmClass = new DijkstraAlgorithm.Dijkstra(graph);
-        AlgorithmClass.CallDijkstraAlgorithm(0);
+        AlgorithmClass.CallDijkstraAlgorithm(0, 0);
         Assert.AreEqual(AlgorithmClass.GetMinimumDistance(0), 0);
+        Assert.AreEqual(AlgorithmClass.GetVerticesPath().Count, 0);
     }
 
     /// <summary>
@@ -63,8 +65,10 @@ public class DijkstraTests
         Assert.Throws<System.ArgumentOutOfRangeException>(() => AlgorithmClass.GetMinimumDistance(-1));
         Assert.Throws<System.ArgumentOutOfRangeException>(() => AlgorithmClass.GetMinimumDistance(2));
 
-        Assert.Throws<System.ArgumentOutOfRangeException>(() => AlgorithmClass.CallDijkstraAlgorithm(-1));
-        Assert.Throws<System.ArgumentOutOfRangeException>(() => AlgorithmClass.CallDijkstraAlgorithm(2));
+        Assert.Throws<System.ArgumentOutOfRangeException>(() => AlgorithmClass.CallDijkstraAlgorithm(-1, 0));
+        Assert.Throws<System.ArgumentOutOfRangeException>(() => AlgorithmClass.CallDijkstraAlgorithm(2, 0));
+        Assert.Throws<System.ArgumentOutOfRangeException>(() => AlgorithmClass.CallDijkstraAlgorithm(0, -1));
+        Assert.Throws<System.ArgumentOutOfRangeException>(() => AlgorithmClass.CallDijkstraAlgorithm(0, 2));
     }
 
     /// <summary>
@@ -80,12 +84,15 @@ public class DijkstraTests
                          { 0,  0,  0,  6,  0, 9 },
                          { 14, 0,  2,  0,  9, 0 } };
         DijkstraAlgorithm.Dijkstra AlgorithmClass = new DijkstraAlgorithm.Dijkstra(graph);
-        AlgorithmClass.CallDijkstraAlgorithm(0);
+        AlgorithmClass.CallDijkstraAlgorithm(0, 5);
         Assert.AreEqual(AlgorithmClass.GetMinimumDistance(0), 0);
         Assert.AreEqual(AlgorithmClass.GetMinimumDistance(1), 7);
         Assert.AreEqual(AlgorithmClass.GetMinimumDistance(2), 9);
         Assert.AreEqual(AlgorithmClass.GetMinimumDistance(3), 20);
         Assert.AreEqual(AlgorithmClass.GetMinimumDistance(4), 20);
         Assert.AreEqual(AlgorithmClass.GetMinimumDistance(5), 11);
+
+        List<int> VerticesPath = new List<int> { 0, 1, 2, 5 };
+        Assert.AreEqual(AlgorithmClass.GetVerticesPath(), VerticesPath);
     }
 }

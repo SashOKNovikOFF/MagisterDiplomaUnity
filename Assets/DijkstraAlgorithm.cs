@@ -28,6 +28,10 @@ namespace DijkstraAlgorithm
         /// Представляется в виде [L(0), L(1), ..., L(N)], где L(i) - расстояние от заданной вершины до вершины i.
         /// </summary>
         private int[] minimum_distance;
+        /// <summary>
+        /// Лист из индексов вершин, по которым можно построить минимальный путь из вершины i до вершины j.
+        /// </summary>
+        private List<int> VerticesPath;
 
         /// <summary>
         /// Определить вершину, для которой не рассчитывалось минимальное расстояние до других вершин.
@@ -82,6 +86,7 @@ namespace DijkstraAlgorithm
 
             graph = initGraph;
             minimum_distance = new int[verticesCount];
+            VerticesPath = new List<int>();
         }
 
         /// <summary>
@@ -102,14 +107,28 @@ namespace DijkstraAlgorithm
         }
 
         /// <summary>
+        /// Получить лист из индексов вершин, по которым можно построить минимальный путь из вершины i до вершины j.
+        /// </summary>
+        /// <returns>
+        /// Лист из индексов вершин, по которым можно построить минимальный путь из вершины i до вершины j.
+        /// </returns>
+        public List<int> GetVerticesPath()
+        {
+            return VerticesPath;
+        }
+
+        /// <summary>
         /// Рассчитать минимальные расстояния до всех вершин при помощи алгоритма Дейкстры.
         /// </summary>
         /// <param name="source">
         /// Вершина графа, с которой рассчитывается минимальное расстояние до любой другой.
         /// </param>
-        public void CallDijkstraAlgorithm(int source)
+        /// <param name="endVertice">
+        /// Вершина графа, до которой строится путь с минимальным расстоянием.
+        /// </param>
+        public void CallDijkstraAlgorithm(int source, int endVertice)
         {
-            if (source < 0 || source >= verticesCount)
+            if (source < 0 || source >= verticesCount || endVertice < 0 || endVertice >= verticesCount)
                 throw new System.ArgumentOutOfRangeException("Выбрана вершина вне диапазона имеющихся вершин.");
 
             int[] distance = new int[verticesCount];
@@ -123,9 +142,19 @@ namespace DijkstraAlgorithm
 
             distance[source] = 0;
 
+            bool pathFlag = true;
             for (int count = 0; count < verticesCount - 1; ++count)
             {
                 int u = MinimumDistance(distance, shortestPathTreeSet);
+
+                if ((u != endVertice) && pathFlag)
+                    VerticesPath.Add(u);
+                else if (pathFlag)
+                {
+                    VerticesPath.Add(endVertice);
+                    pathFlag = false;
+                }
+
                 shortestPathTreeSet[u] = true;
 
                 for (int v = 0; v < verticesCount; ++v)
